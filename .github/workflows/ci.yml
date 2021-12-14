@@ -1,0 +1,18 @@
+on:
+  push:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [8, 11, 17]
+    steps:
+    - uses: actions/checkout@v2.4.0
+    - uses: actions/setup-java@v2
+      with:
+        java-version: ${{matrix.java}}
+        distribution: temurin
+    - run: sbt "print externalDependencyClasspath" clean
+    - run: sbt "set useCoursier := false" "print externalDependencyClasspath"
